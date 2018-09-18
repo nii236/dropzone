@@ -119,6 +119,13 @@ func main() {
 			return
 		}
 
+		numFiles := len(files)
+		log.Println("number of files:", numFiles)
+		if numFiles > 100 {
+			log.Println("truncating file list")
+			files = files[:99]
+		}
+
 		if len(files) < 3 {
 			chunks.First = files
 			tpl := template.Must(template.New("index").Parse(pages.String("index.html")))
@@ -129,7 +136,6 @@ func main() {
 			return
 		}
 
-		numFiles := len(files)
 		chunks.First = files[0 : numFiles/3-1]
 		chunks.Second = files[numFiles/3 : numFiles*2/3-1]
 		chunks.Third = files[numFiles*2/3 : numFiles-1]
