@@ -25,7 +25,7 @@
     </div>
 
     <div class="container">
-        <div class="columns is-mobile">
+        <div class="columns is-mobile is-multiline">
             <div class="column is-10-desktop is-6-mobile" style="margin-bottom:1rem">
                 <form action="/" method="post" class="dropzone" id="my-dz-image">
                     <div class="dz-message needsclick">
@@ -44,6 +44,13 @@
                     </div>
                 </form>
             </div>
+            <div class="column is-12-desktop is-12-mobile" style="margin-bottom:1rem; height: 5rem; overflow-y: hidden">
+
+                <div class="dropzone-previews" id="previews-container">
+
+                </div>
+            </div>
+
         </div>
 
         <div class="tile is-ancestor">
@@ -78,14 +85,28 @@
         </div>
     </div>
 
+    <div id="tpl">
+        <div class="dz-preview dz-file-preview" style="margin:1rem;">
+            <p>
+                <div class="dz-size" data-dz-size></div>
+                <div class="dz-success-mark"><span>✔</span></div>
+            </p>
+        </div>
+    </div>
+
+
 </body>
 <script>
+    const previewsContainer = document.getElementById("previews-container")
+    tpl = document
+        .querySelector('#tpl')
+        .innerHTML
     Dropzone.autoDiscover = false;
-    Dropzone.options.myDzImage = { clickable: true, acceptedFiles: "image/*" };
-    Dropzone.options.myDzVideo = { clickable: true };
-
-    dzImage = new Dropzone('#my-dz-image')
-    dzVideo = new Dropzone('#my-dz-video')
+    Dropzone.createImageThumbnails = false;
+    Dropzone.options.myDzImage = { previewTemplate: tpl, createImageThumbnails: false, clickable: true, acceptedFiles: "image/*" };
+    Dropzone.options.myDzVideo = { previewTemplate: tpl, createImageThumbnails: false, clickable: true };
+    dzImage = new Dropzone('#my-dz-image');
+    dzVideo = new Dropzone('#my-dz-video');
 </script>
 
 </html>
