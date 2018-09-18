@@ -107,8 +107,6 @@ func main() {
 		w.Write(buf.Bytes())
 	})
 	r.Post("/", func(w http.ResponseWriter, r *http.Request) {
-		r.Body = http.MaxBytesReader(w, r.Body, 30*1024*1024) // 30 MB
-
 		file, info, err := r.FormFile("file")
 		if err != nil {
 			log.Println("can not open form file:", err)
