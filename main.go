@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -9,12 +12,13 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/pierrre/archivefile/zip"
 	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/go-chi/chi"
 	"github.com/gobuffalo/packr"
-	"github.com/gofrs/uuid"
 )
 
 type Config struct {
@@ -83,6 +87,25 @@ func main() {
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(page))
 	})
+	r.Get("/files/all", func(w http.ResponseWriter, r *http.Request) {
+		tmpDir, err := ioutil.TempDir("", "zip")
+		if err != nil {
+			panic(err)
+		}
+		defer func() {
+			_ = os.RemoveAll(tmpDir)
+		}()
+
+		progress := func(archivePath string) {
+			fmt.Println(archivePath)
+		}
+		buf := &bytes.Buffer{}
+		err = zip.Archive(config.StoragePath, buf, progress)
+		if err != nil {
+			panic(err)
+		}
+		w.Write(buf.Bytes())
+	})
 	r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 		r.Body = http.MaxBytesReader(w, r.Body, 30*1024*1024) // 30 MB
 
@@ -98,8 +121,9 @@ func main() {
 
 		// Create a file with the same name
 		// assuming that you have a folder named 'uploads'
+		fmt.Println(time.Now().Format(time.RFC3339Nano) + ext)
 		out, err := os.OpenFile(
-			path.Join(config.StoragePath, uuid.Must(uuid.NewV4()).String()+ext),
+			path.Join(config.StoragePath, time.Now().Format("2006-01-02T15-04-05.999999999")+ext),
 			os.O_WRONLY|os.O_CREATE, 0666,
 		)
 
@@ -116,7 +140,6 @@ func main() {
 			http.Error(w, "could not write file: "+err.Error(), 500)
 			return
 		}
-
 	})
 
 	log.Println("Serving on:", config.Port)

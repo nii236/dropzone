@@ -40,3 +40,7 @@
 [[constraint]]
   name = "github.com/gobuffalo/packr"
   version = "1.13.5"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/pierrre/archivefile"

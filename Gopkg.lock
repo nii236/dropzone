@@ -45,6 +45,14 @@
   version = "v3.1.1"
 
 [[projects]]
+  branch = "master"
+  digest = "1:79f315cde9f8c7957ccc874d57723766c9beec27d31a2a41e849839e7ee76963"
+  name = "github.com/pierrre/archivefile"
+  packages = ["zip"]
+  pruneopts = "UT"
+  revision = "e2d100bc74f58ed7d2f41175cd2cf5fe29446399"
+
+[[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -67,6 +75,7 @@
     "github.com/go-chi/chi",
     "github.com/gobuffalo/packr",
     "github.com/gofrs/uuid",
+    "github.com/pierrre/archivefile/zip",
     "gopkg.in/alecthomas/kingpin.v2",
   ]
   solver-name = "gps-cdcl"
