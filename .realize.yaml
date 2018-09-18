@@ -1,0 +1,22 @@
+settings:
+  legacy:
+    force: false
+    interval: 0s
+schema:
+  - name: dropzone
+    path: .
+    commands:
+      run:
+        status: true
+    args:
+      - --port=8082
+      - --storagePath=./files
+    watcher:
+      extensions:
+        - go
+      paths:
+        - /
+      ignored_paths:
+        - .git
+        - .realize
+        - vendor
