@@ -136,9 +136,9 @@ func main() {
 			return
 		}
 
-		chunks.First = files[0 : numFiles/3-1]
-		chunks.Second = files[numFiles/3 : numFiles*2/3-1]
-		chunks.Third = files[numFiles*2/3 : numFiles-1]
+		chunks.First = files[ : numFiles/3]
+		chunks.Second = files[numFiles/3 : numFiles*2/3]
+		chunks.Third = files[numFiles*2/3 :]
 		tpl := template.Must(template.New("index").Parse(pages.String("index.html")))
 		err = tpl.Execute(w, chunks)
 		if err != nil {

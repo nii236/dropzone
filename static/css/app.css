@@ -24,3 +24,47 @@ body {
 .upload-icon {
 	height: 5rem;
 }
+
+.upload-item {
+	text-align: center;
+}
+.dz-error-mark {
+	display: none;
+}
+.dz-success-mark {
+	display: none;
+}
+.dz-progress {
+	display: none;
+}
+.dz-processing > .dz-error-mark {
+	display: none;
+}
+.dz-processing > .dz-success-mark {
+	display: none;
+}
+.dz-processing > .dz-progress {
+	display: block;
+}
+.dz-success > .dz-error-mark {
+	display: none;
+}
+.dz-success > .dz-success-mark {
+	display: block;
+}
+.dz-success > .dz-progress {
+	display: none;
+}
+.dz-error > .dz-success-mark {
+	display: none;
+}
+.dz-error > .dz-error-mark {
+	display: block;
+}
+.dz-error > .dz-progress {
+	display: none;
+}
+.dz-progress > .dz-upload {
+	background-color: silver;
+	padding:5px;
+}

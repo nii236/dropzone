@@ -25,8 +25,8 @@
     </div>
 
     <div class="container">
-        <div class="columns is-mobile is-multiline">
-            <div class="column is-10-desktop is-6-mobile" style="margin-bottom:1rem">
+        <div class="columns is-flex is-multiline">
+            <div class="column is-10-desktop is-8-tablet is-6-mobile">
                 <form action="/" method="post" class="dropzone" id="my-dz-image">
                     <div class="dz-message needsclick">
                         <div class="needsclick upload-container">
@@ -35,7 +35,7 @@
                     </div>
                 </form>
             </div>
-            <div class="column is-2-desktop is-6-mobile" style="margin-bottom:1rem">
+            <div class="column is-2-desktop is-4-tablet is-6-mobile">
                 <form action="/" method="post" class="dropzone" id="my-dz-video">
                     <div class="dz-message needsclick">
                         <div class="needsclick upload-container">
@@ -44,69 +44,75 @@
                     </div>
                 </form>
             </div>
-            <div class="column is-12-desktop is-12-mobile" style="margin-bottom:1rem; height: 5rem; overflow-y: hidden">
-
-                <div class="dropzone-previews" id="previews-container">
+            <div class="column is-12">
+                <div class="columns is-flex is-multiline" id="previews-container" />
+            </div>
+            <div class="column is-12">
+                <div class="tile is-ancestor">
+                    <div class="tile is-parent is-vertical is-4">
+                        {{range .First}}
+                        <div class="tile is-gapless" style="flex-grow: 0">
+                            <a href="{{.}}">
+                                <img src="{{.}}" />
+                            </a>
+                        </div>
+                        {{end}}
+                    </div>
+                    <div class="tile is-parent is-vertical is-4">
+                        {{range .Second}}
+                        <div class="tile" style="flex-grow: 0">
+                            <a href="{{.}}">
+                                <img src="{{.}}" />
+                            </a>
+                        </div>
+                        {{end}}
+                    </div>
+                    <div class="tile is-parent is-vertical is-4">
+                        {{range .Third}}
+                        <div class="tile" style="flex-grow: 0">
+                            <a href="{{.}}">
+                                <img src="{{.}}" />
+                            </a>
+                        </div>
+                        {{end}}
+                    </div>
 
                 </div>
             </div>
-
-        </div>
-
-        <div class="tile is-ancestor">
-            <div class="tile is-parent is-vertical is-4">
-                {{range .First}}
-                <div class="tile is-gapless" style="flex-grow: 0">
-                    <a href="{{.}}">
-                        <img src="{{.}}" />
-                    </a>
-                </div>
-                {{end}}
-            </div>
-            <div class="tile is-parent is-vertical is-4">
-                {{range .Second}}
-                <div class="tile" style="flex-grow: 0">
-                    <a href="{{.}}">
-                        <img src="{{.}}" />
-                    </a>
-                </div>
-                {{end}}
-            </div>
-            <div class="tile is-parent is-vertical is-4">
-                {{range .Third}}
-                <div class="tile" style="flex-grow: 0">
-                    <a href="{{.}}">
-                        <img src="{{.}}" />
-                    </a>
-                </div>
-                {{end}}
-            </div>
-
         </div>
     </div>
+    <div id="tpl-org">
 
-    <div id="tpl">
-        <div class="dz-preview dz-file-preview" style="margin:1rem;">
-            <p>
-                <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
-
-                <div class="dz-size" data-dz-size></div>
-                <div class="dz-success-mark"><span>✔</span></div>
-            </p>
+        <div class="column is-1-desktop is-3-mobile is-2-tablet upload-item">
+            <img data-dz-thumbnail />
+            <div class="dz-progress">
+                <div class="dz-upload" data-dz-uploadprogress></div>
+            </div>
+            <div class="dz-size" data-dz-size></div>
+            <div class="dz-success-mark"><span>✔</span></div>
+            <div class="dz-error-mark"><span>✘</span></div>
         </div>
     </div>
-
-
 </body>
 <script>
     const previewsContainer = document.getElementById("previews-container")
+
     tpl = document
-        .querySelector('#tpl')
+        .querySelector('#tpl-org')
         .innerHTML
     Dropzone.autoDiscover = false;
-    Dropzone.createImageThumbnails = false;
-    Dropzone.options.myDzImage = { previewTemplate: tpl, createImageThumbnails: false, clickable: true, acceptedFiles: "image/*" };
-    Dropzone.options.myDzVideo = { previewTemplate: tpl, createImageThumbnails: false, clickable: true };
+
+    Dropzone.options.myDzImage = {
+        previewsContainer: previewsContainer,
+        previewTemplate: tpl,
+        clickable: true,
+        acceptedFiles: "image/*"
+    };
+    Dropzone.options.myDzVideo = {
+        previewsContainer: previewsContainer,
+        previewTemplate: tpl,
+        clickable: true
+    };
     dzImage = new Dropzone('#my-dz-image');
     dzVideo = new Dropzone('#my-dz-video');
 </script>
