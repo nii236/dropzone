@@ -11,6 +11,7 @@ schema:
     args:
       - --port=8082
       - --storagePath=./files
+      - --imageCachePath=./imagecache
     watcher:
       extensions:
         - go

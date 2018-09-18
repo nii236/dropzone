@@ -44,3 +44,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/pierrre/archivefile"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/nfnt/resize"

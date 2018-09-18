@@ -37,12 +37,12 @@
   version = "v1.13.5"
 
 [[projects]]
-  digest = "1:ce579162ae1341f3e5ab30c0dce767f28b1eb6a81359aad01723f1ba6b4becdf"
-  name = "github.com/gofrs/uuid"
+  branch = "master"
+  digest = "1:34534b73e925d20cc72cf202f8b482fdcbe3a1b113e19375f31aadabd0f0f97d"
+  name = "github.com/nfnt/resize"
   packages = ["."]
   pruneopts = "UT"
-  revision = "370558f003bfe29580cd0f698d8640daccdcc45c"
-  version = "v3.1.1"
+  revision = "83c6a9932646f83e3267f353373d47347b6036b2"
 
 [[projects]]
   branch = "master"
@@ -74,7 +74,7 @@
   input-imports = [
     "github.com/go-chi/chi",
     "github.com/gobuffalo/packr",
-    "github.com/gofrs/uuid",
+    "github.com/nfnt/resize",
     "github.com/pierrre/archivefile/zip",
     "gopkg.in/alecthomas/kingpin.v2",
   ]
