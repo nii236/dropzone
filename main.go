@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"image"
 	"image/jpeg"
 	"io/ioutil"
@@ -17,6 +16,7 @@ import (
 
 	"html/template"
 
+	"github.com/go-chi/chi/middleware"
 	"github.com/nfnt/resize"
 	"github.com/pierrre/archivefile/zip"
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -36,28 +36,6 @@ var (
 	storagePathFlag    = kingpin.Flag("storagePath", "Storage path").Required().String()
 	portFlag           = kingpin.Flag("port", "Serve port").Required().Int()
 )
-
-// FileServer conveniently sets up a http.FileServer handler to serve
-// static files from a http.FileSystem.
-func FileServer(r chi.Router, path string, root http.FileSystem) {
-	if strings.ContainsAny(path, "{}*") {
-		panic("FileServer does not permit URL parameters.")
-	}
-
-	fs := http.StripPrefix(path, http.FileServer(root))
-
-	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
-		path += "/"
-	}
-	path += "*"
-
-	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fs.ServeHTTP(w, r)
-	}))
-}
-
-type Files []os.FileInfo
 
 func list(imageCachePath string) ([]string, error) {
 	infos, err := ioutil.ReadDir(imageCachePath)
@@ -120,6 +98,11 @@ func main() {
 		ImageCachePath: *imageCachePathFlag,
 	}
 	r := chi.NewMux()
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+
 	r.Handle("/files/*", http.StripPrefix("/files", http.FileServer(http.Dir(config.StoragePath))))
 	r.Handle("/imagecache/*", http.StripPrefix("/imagecache", http.FileServer(http.Dir(config.ImageCachePath))))
 	r.Handle("/static/*", http.StripPrefix("/static", http.FileServer(box)))
@@ -131,7 +114,7 @@ func main() {
 		}
 		files, err := list(config.ImageCachePath)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			http.Error(w, "could not list files", 500)
 			return
 		}
@@ -141,7 +124,7 @@ func main() {
 			tpl := template.Must(template.New("index").Parse(pages.String("index.html")))
 			err = tpl.Execute(w, chunks)
 			if err != nil {
-				fmt.Println(err)
+				log.Println(err)
 			}
 			return
 		}
@@ -153,9 +136,8 @@ func main() {
 		tpl := template.Must(template.New("index").Parse(pages.String("index.html")))
 		err = tpl.Execute(w, chunks)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
-
 	})
 	r.Get("/files/all", func(w http.ResponseWriter, r *http.Request) {
 		tmpDir, err := ioutil.TempDir("", "zip")
@@ -167,19 +149,21 @@ func main() {
 		}()
 
 		progress := func(archivePath string) {
-			fmt.Println(archivePath)
+			log.Println(archivePath)
 		}
 		buf := &bytes.Buffer{}
 		err = zip.Archive(config.StoragePath, buf, progress)
 		if err != nil {
-			panic(err)
+			log.Println("can not create zip:", err)
+			http.Error(w, "can not create zip: "+err.Error(), 400)
+			return
 		}
 		w.Write(buf.Bytes())
 	})
 	r.Post("/", func(w http.ResponseWriter, r *http.Request) {
 		file, info, err := r.FormFile("file")
 		if err != nil {
-			fmt.Println("can not open form file:", err)
+			log.Println("can not open form file:", err)
 			http.Error(w, "can not open form file: "+err.Error(), 400)
 			return
 		}
@@ -189,30 +173,35 @@ func main() {
 
 		b, err := ioutil.ReadAll(file)
 		if err != nil {
-			fmt.Println("could not read file:", err)
+			log.Println("could not read file:", err)
 			http.Error(w, "could not read file: "+err.Error(), 500)
 			return
 		}
 		err = ioutil.WriteFile(filepath.Join(config.StoragePath, time.Now().Format("2006-01-02T15-04-05.999999999")+ext), b, os.ModePerm)
 		if err != nil {
-			fmt.Println("could not write file:", err)
+			log.Println("could not write file:", err)
 			http.Error(w, "could not write file: "+err.Error(), 500)
 			return
 		}
 
-		resized, err := resizeImage(b)
-		if err != nil {
-			http.Error(w, "could not resize jpeg: "+err.Error(), 500)
-			return
+		if strings.Contains(ext, "jpg") || strings.Contains(ext, "jpeg") {
+			resized, err := resizeImage(b)
+			if err != nil {
+				log.Println("could not resize jpeg:", err)
+				http.Error(w, "could not resize jpeg: "+err.Error(), 500)
+				return
+			}
+			err = ioutil.WriteFile(filepath.Join(config.ImageCachePath, time.Now().Format("2006-01-02T15-04-05.999999999")+ext), resized, os.ModePerm)
+			if err != nil {
+				log.Println("could not write file:", err)
+				http.Error(w, "could not write file: "+err.Error(), 500)
+				return
+			}
 		}
-		err = ioutil.WriteFile(filepath.Join(config.ImageCachePath, time.Now().Format("2006-01-02T15-04-05.999999999")+ext), resized, os.ModePerm)
-		if err != nil {
-			fmt.Println("could not write file:", err)
-			http.Error(w, "could not write file: "+err.Error(), 500)
-			return
-		}
+
+		w.Write([]byte("ok"))
 	})
 
-	fmt.Println("Serving on:", config.Port)
+	log.Println("Serving on:", config.Port)
 	log.Fatalln(http.ListenAndServe(":"+strconv.Itoa(config.Port), r))
 }

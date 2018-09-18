@@ -48,3 +48,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/nfnt/resize"
+
+[[constraint]]
+  name = "github.com/go-chi/chi"
+  version = "3.3.3"

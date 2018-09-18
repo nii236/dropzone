@@ -13,9 +13,11 @@
 <body>
     <div class="hero">
         <div class="hero-body app-hero">
-            <h1 class="title">Welcome to the Dropzone</h1>
-            <h2 class="subtitle">
+            <h1 class="title">
                 John and Tenita's Wedding
+            </h1>
+            <h2 class="subtitle">
+                Welcome to the Dropzone
             </h2>
 
         </div>
@@ -23,7 +25,15 @@
 
     <div class="container">
         <div class="is-12" style="margin-bottom:1rem">
-            <form action="/" class="dropzone app-dropzone">
+            <div id="dropzone">
+                <form action="/" class="dropzone needsclick dz-clickable" id="demo-upload">
+                    <div class="dz-message needsclick">
+                        <div class="needsclick upload-container">
+                            <img class="needsclick upload-icon" src="/static/svg/upload.svg" />
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="tile is-ancestor">
             <div class="tile is-parent is-vertical is-4">
