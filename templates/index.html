@@ -4,6 +4,7 @@
 <head>
     <title>Photo Upload</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/app.css">
     <link rel="stylesheet" href="/static/css/bulma.min.css">
     <link rel="stylesheet" href="/static/css/dropzone.css">
     <script src="/static/js/dropzone.js"></script>
@@ -11,7 +12,7 @@
 
 <body>
     <div class="hero">
-        <div class="hero-body" style="text-align: center; padding-bottom: 0">
+        <div class="hero-body app-hero">
             <h1 class="title">Welcome to the Dropzone</h1>
             <h2 class="subtitle">
                 John and Tenita's Wedding
@@ -22,16 +23,14 @@
 
     <div class="container">
         <div class="is-12" style="margin-bottom:1rem">
-            <form action="/" class="dropzone" style="background-color: transparent">
+            <form action="/" class="dropzone app-dropzone">
         </div>
         <div class="tile is-ancestor">
             <div class="tile is-parent is-vertical is-4">
                 {{range .First}}
-                <div class="tile" style="flex-grow: 0">
+                <div class="tile is-gapless" style="flex-grow: 0">
                     <a href="{{.}}">
-                        <figure>
-                            <img src="{{.}}" />
-                        </figure>
+                        <img src="{{.}}" />
                     </a>
                 </div>
                 {{end}}
@@ -40,9 +39,7 @@
                 {{range .Second}}
                 <div class="tile" style="flex-grow: 0">
                     <a href="{{.}}">
-                        <figure>
-                            <img src="{{.}}" />
-                        </figure>
+                        <img src="{{.}}" />
                     </a>
                 </div>
                 {{end}}
@@ -51,9 +48,7 @@
                 {{range .Third}}
                 <div class="tile" style="flex-grow: 0">
                     <a href="{{.}}">
-                        <figure>
-                            <img src="{{.}}" />
-                        </figure>
+                        <img src="{{.}}" />
                     </a>
                 </div>
                 {{end}}

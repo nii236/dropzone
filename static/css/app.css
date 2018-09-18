@@ -1,0 +1,16 @@
+body {
+	position: relative;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.app-hero {
+	text-align: center;
+	padding-bottom: 0;
+}
+
+.app-dropzone {
+	background-color: transparent;
+}
