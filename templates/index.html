@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/static/css/bulma.min.css">
     <link rel="stylesheet" href="/static/css/dropzone.css">
     <script src="/static/js/dropzone.js"></script>
+
 </head>
 
 <body>
@@ -24,9 +25,18 @@
     </div>
 
     <div class="container">
-        <div class="is-12" style="margin-bottom:1rem">
-            <div id="dropzone">
-                <form action="/" class="dropzone needsclick dz-clickable" id="demo-upload">
+        <div class="columns is-mobile">
+            <div class="column is-10-desktop is-6-mobile" style="margin-bottom:1rem">
+                <form action="/" method="post" class="dropzone" id="my-dz-image">
+                    <div class="dz-message needsclick">
+                        <div class="needsclick upload-container">
+                            <img class="needsclick upload-icon" src="/static/svg/camera-retro.svg" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="column is-2-desktop is-6-mobile" style="margin-bottom:1rem">
+                <form action="/" method="post" class="dropzone" id="my-dz-video">
                     <div class="dz-message needsclick">
                         <div class="needsclick upload-container">
                             <img class="needsclick upload-icon" src="/static/svg/upload.svg" />
@@ -35,6 +45,7 @@
                 </form>
             </div>
         </div>
+
         <div class="tile is-ancestor">
             <div class="tile is-parent is-vertical is-4">
                 {{range .First}}
@@ -68,5 +79,13 @@
     </div>
 
 </body>
+<script>
+    Dropzone.autoDiscover = false;
+    Dropzone.options.myDzImage = { clickable: true, acceptedFiles: "image/*" };
+    Dropzone.options.myDzVideo = { clickable: true };
+
+    dzImage = new Dropzone('#my-dz-image')
+    dzVideo = new Dropzone('#my-dz-video')
+</script>
 
 </html>
