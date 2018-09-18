@@ -104,6 +104,12 @@ func readCache(filename string) ([]byte, error) {
 	return ioutil.ReadFile(filename)
 }
 
+type Chunks struct {
+	First  []string
+	Second []string
+	Third  []string
+}
+
 func main() {
 	box := packr.NewBox("static")
 	pages := packr.NewBox("templates")
@@ -118,13 +124,38 @@ func main() {
 	r.Handle("/imagecache/*", http.StripPrefix("/imagecache", http.FileServer(http.Dir(config.ImageCachePath))))
 	r.Handle("/static/*", http.StripPrefix("/static", http.FileServer(box)))
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		chunks := &Chunks{
+			First:  []string{},
+			Second: []string{},
+			Third:  []string{},
+		}
 		files, err := list(config.ImageCachePath)
 		if err != nil {
+			fmt.Println(err)
 			http.Error(w, "could not list files", 500)
 			return
 		}
+
+		if len(files) < 3 {
+			chunks.First = files
+			tpl := template.Must(template.New("index").Parse(pages.String("index.html")))
+			err = tpl.Execute(w, chunks)
+			if err != nil {
+				fmt.Println(err)
+			}
+			return
+		}
+
+		numFiles := len(files)
+		chunks.First = files[0 : numFiles/3-1]
+		chunks.Second = files[numFiles/3 : numFiles*2/3-1]
+		chunks.Third = files[numFiles*2/3 : numFiles-1]
 		tpl := template.Must(template.New("index").Parse(pages.String("index.html")))
-		tpl.Execute(w, files)
+		err = tpl.Execute(w, chunks)
+		if err != nil {
+			fmt.Println(err)
+		}
+
 	})
 	r.Get("/files/all", func(w http.ResponseWriter, r *http.Request) {
 		tmpDir, err := ioutil.TempDir("", "zip")

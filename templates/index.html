@@ -12,34 +12,56 @@
 <body>
     <div class="hero">
         <div class="hero-body" style="text-align: center; padding-bottom: 0">
-            <h1 class=" title">Welcome to the Dropzone</h1>
+            <h1 class="title">Welcome to the Dropzone</h1>
             <h2 class="subtitle">
                 John and Tenita's Wedding
             </h2>
+
         </div>
     </div>
-    <div class="section">
-        <div class="container is-fluid">
-            <div class="column">
-                <form action="/" class="dropzone">
-            </div>
-            <div class="columns is-multiline">
-                {{range .}}
-                <div class="column is-full-mobile is-one-third-tablet is-one-quarter-desktop">
-                    <div class="card">
-                        <div class="card-content">
-                            <a href="{{.}}">
-                                <figure>
-                                    <img src="{{.}}" />
-                                </figure>
-                            </a>
-                        </div>
-                    </div>
+
+    <div class="container">
+        <div class="is-12" style="margin-bottom:1rem">
+            <form action="/" class="dropzone" style="background-color: transparent">
+        </div>
+        <div class="tile is-ancestor">
+            <div class="tile is-parent is-vertical is-4">
+                {{range .First}}
+                <div class="tile" style="flex-grow: 0">
+                    <a href="{{.}}">
+                        <figure>
+                            <img src="{{.}}" />
+                        </figure>
+                    </a>
                 </div>
                 {{end}}
             </div>
+            <div class="tile is-parent is-vertical is-4">
+                {{range .Second}}
+                <div class="tile" style="flex-grow: 0">
+                    <a href="{{.}}">
+                        <figure>
+                            <img src="{{.}}" />
+                        </figure>
+                    </a>
+                </div>
+                {{end}}
+            </div>
+            <div class="tile is-parent is-vertical is-4">
+                {{range .Third}}
+                <div class="tile" style="flex-grow: 0">
+                    <a href="{{.}}">
+                        <figure>
+                            <img src="{{.}}" />
+                        </figure>
+                    </a>
+                </div>
+                {{end}}
+            </div>
+
         </div>
     </div>
+
 </body>
 
 </html>
